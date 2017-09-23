@@ -21,19 +21,44 @@ router.get('/:id', (req, res, next) => {
 
 // new
 router.post('/', (req, res, next) => {
-  story.new(req.body.title, req.body.content, (err, result) => {
+  story.new(req.body.title, req.body.content, true, (err, result) => {
     if (err) return next(err);
-    res.json(result.insertedId);
+    res.json({
+      success: true,
+      id: result.insertedId
+    });
   });
+});
+
+// split
+router.post('/branch', (req, res, next) => {
+  const origID = req.body.rootID;
+  const root = req.body.rootText;
+  const origChild = req.body.originalChild;
+  const branched = req.body.branchedChild;
+
+  story.splitUpdate(
+    origID,
+    req.body.title,
+    root,
+    origChild,
+    branched,
+    (err, record) => {
+      if (err) return next(err);
+      res.json({
+        success: true,
+        record,
+      });
+    },
+  );
 });
 
 // delete
 router.delete('/:id', (req, res, next) => {
-  story.delete(req.params.id, (err) => {
+  story.delete(req.params.id, err => {
     if (err) return next(err);
-    res.json({ success: true });
+    res.json({success: true});
   });
 });
 
 module.exports = router;
-
