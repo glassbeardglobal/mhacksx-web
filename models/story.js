@@ -46,3 +46,21 @@ exports.delete = (id, callback) => {
       callback(err);
     });
 };
+
+exports.upvote =(id, callback) => {
+  mongoUtil
+    .getDb()
+    .collection(collectionName)
+    .update({_id: ObjectID(id)}, {$inc: {upv: 1}}, err => {
+      callback(err);
+    });
+};
+
+exports.downvote =(id, callback) => {
+  mongoUtil
+    .getDb()
+    .collection(collectionName)
+    .update({_id: ObjectID(id)}, {$inc: {dv: 1}}, err => {
+      callback(err);
+    });
+};

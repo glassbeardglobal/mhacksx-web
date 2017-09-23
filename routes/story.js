@@ -16,7 +16,7 @@ router.get('/:id', (req, res, next) => {
   story.get(req.params.id, (err, value) => {
     if (err) return next(err);
     res.json(value);
-  });
+  }); 
 });
 
 // new
@@ -30,6 +30,22 @@ router.post('/', (req, res, next) => {
 // delete
 router.delete('/:id', (req, res, next) => {
   story.delete(req.params.id, (err) => {
+    if (err) return next(err);
+    res.json({ success: true });
+  });
+});
+
+// upvote
+router.post('/:id/upv', (req, res, next) => {
+  story.upvote(req.params.id, (err) => {
+    if (err) return next(err);
+    res.json({ success: true });
+  });
+});
+
+// downvote
+router.post('/:id/dv', (req, res, next) => {
+  story.downvote(req.params.id, (err) => {
     if (err) return next(err);
     res.json({ success: true });
   });
