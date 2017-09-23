@@ -1,0 +1,26 @@
+{
+  "name": "mhacksx-web",
+  "version": "1.0.0",
+  "description": "Mhacks X Backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glassbeardglobal/mhacksx-web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/glassbeardglobal/mhacksx-web/issues"
+  },
+  "homepage": "https://github.com/glassbeardglobal/mhacksx-web#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "chalk": "^2.1.0",
+    "express": "^4.15.4",
+    "morgan": "^1.8.2"
+  }
+}
