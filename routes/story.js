@@ -1,5 +1,5 @@
 const express = require('express');
-const story = require('../models/story.js');
+const story = require('../models/story');
 
 const router = express.Router();
 
@@ -21,17 +21,9 @@ router.get('/:id', (req, res, next) => {
 
 // new
 router.post('/', (req, res, next) => {
-  story.new(req.body.name, req.body.desc, req.body.rating, (err, result) => {
+  story.new(req.body.title, req.body.content, (err, result) => {
     if (err) return next(err);
     res.json(result.insertedId);
-  });
-});
-
-// update
-router.put('/:id', (req, res, next) => {
-  story.update(req.params.id, req.body.name, req.body.desc, req.body.rating, (err) => {
-    if (err) return next(err);
-    res.json({ success: true });
   });
 });
 
@@ -44,3 +36,4 @@ router.delete('/:id', (req, res, next) => {
 });
 
 module.exports = router;
+

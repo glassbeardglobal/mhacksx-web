@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const http = require('http');
 
 const app = require('../app');
+const mongoUtil = require('../helpers/mongoUtil');
 
 /**
  * Get port from environment and store in Express.
@@ -24,9 +25,15 @@ const server = http.createServer(app);
  * Connect to MongoDB, then listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+mongoUtil.connectToDB((err) => {
+  if (err) {
+    console.log(chalk.red(err));
+  }
+
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+});
 
 /**
  * Event listener for HTTP server "listening" event.
