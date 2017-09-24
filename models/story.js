@@ -48,11 +48,21 @@ exports.new = (title, content, root, author, callback) => {
         author: author
       },
       (err, result) => {
-        if (err) return next(err);
         callback(err, result);
       }
     );
 };
+
+exports.getBranches = (nodeIDs, callback) => {
+  const ids = nodeIDs.map(d => ObjectID(d));
+  mongoUtil
+    .getDb()
+    .collection(collectionName)
+    .find({ _id: { $in: ids }})
+    .toArray((err, result) => {
+      callback(err, result);
+    });
+}
 
 // takes objectID of original object
 // If ca is null we are branching off the end

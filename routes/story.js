@@ -12,6 +12,13 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.get('/all', (req, res, next) => {
+  story.all((err, value) => {
+    if (err) return next(err);
+    res.json(value);
+  });
+});
+
 // show
 router.get('/:id', (req, res, next) => {
   story.get(req.params.id, (err, value) => {
@@ -61,6 +68,13 @@ router.post('/branch', (req, res, next) => {
       });
     }
   );
+});
+
+router.post('/branches', (req, res, next) => {
+  story.getBranches(req.body.childIds, (err, data) => {
+    if (err) return next(err);
+    res.json({ success: true, data });
+  });
 });
 
 // delete
