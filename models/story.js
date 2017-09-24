@@ -19,6 +19,7 @@ exports.roots = (callback) => {
     .getDb()
     .collection(collectionName)
     .find({ root: true })
+    .sort({ upv: -1 })
     .toArray((err, res) => {
       callback(err, res);
     });
