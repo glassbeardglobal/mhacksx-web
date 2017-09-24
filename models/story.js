@@ -34,7 +34,7 @@ exports.get = (id, callback) => {
     });
 };
 
-exports.new = (title, content, root, author, genre, callback) => {
+exports.new = (title, content, root, author, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
@@ -47,7 +47,7 @@ exports.new = (title, content, root, author, genre, callback) => {
         dv: 0,
         children: [],
         author: author,
-        genre
+        genre: null
       },
       (err, result) => {
         callback(err, result);
