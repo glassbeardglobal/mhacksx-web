@@ -6,7 +6,7 @@ const router = express.Router();
 
 // index
 router.get('/', (req, res, next) => {
-  story.all((err, value) => {
+  story.roots((err, value) => {
     if (err) return next(err);
     res.json(value);
   });

@@ -14,6 +14,16 @@ exports.all = callback => {
     });
 };
 
+exports.roots = (callback) => {
+  mongoUtil
+    .getDb()
+    .collection(collectionName)
+    .find({ root: true })
+    .toArray((err, res) => {
+      callback(err, res);
+    });
+};
+
 exports.get = (id, callback) => {
   mongoUtil
     .getDb()
@@ -23,7 +33,7 @@ exports.get = (id, callback) => {
     });
 };
 
-exports.new = (title, content, end, author, callback) => {
+exports.new = (title, content, root, author, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
@@ -31,13 +41,14 @@ exports.new = (title, content, end, author, callback) => {
       {
         title,
         content,
-        end,
+        root,
         upv: 0,
         dv: 0,
         children: [],
         author: author
       },
       (err, result) => {
+        if (err) return next(err);
         callback(err, result);
       }
     );
@@ -48,7 +59,7 @@ exports.new = (title, content, end, author, callback) => {
 exports.splitUpdate = (origID, title, root, ca, cb, callback) => {
   const col = mongoUtil.getDb().collection(collectionName);
 
-  exports.new(title, cb, true, (err, res) => {
+  exports.new(title, cb, false, null, (err, res) => {
     if (err) return callback(err);
 
     if (ca) {
