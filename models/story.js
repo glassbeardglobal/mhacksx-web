@@ -23,20 +23,24 @@ exports.get = (id, callback) => {
     });
 };
 
-exports.new = (title, content, end, callback) => {
+exports.new = (title, content, end, author, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
-    .insertOne({
-      title,
-      content,
-      end,
-      upv: 0,
-      dv: 0,
-      children: []
-    }, (err, result) => {
-      callback(err, result);
-    });
+    .insertOne(
+      {
+        title,
+        content,
+        end,
+        upv: 0,
+        dv: 0,
+        children: [],
+        author: author
+      },
+      (err, result) => {
+        callback(err, result);
+      }
+    );
 };
 
 // takes objectID of original object
@@ -50,43 +54,54 @@ exports.splitUpdate = (origID, title, root, ca, cb, callback) => {
     if (ca) {
       exports.get(origID, (err, origDoc) => {
         if (err) return callback(err);
-        if (origDoc == null) return callback(new Error("Not Found"));
+        if (origDoc == null) return callback(new Error('Not Found'));
 
-        col.insertOne({
-          title,
-          content: ca,
-          end: origDoc.children.length == 0,
-          upv: 0,
-          dv: 0,
-          children: origDoc.children
-        }, (err, result) => {
-          if (err) return callback(err);
-
-          col.updateOne({ _id: ObjectID(origID) }, {
-            $set: {
-              content: root,
-              children: [res.insertedId, result.insertedId]
-            }
-          }, (err, updateres) => {
+        col.insertOne(
+          {
+            title,
+            content: ca,
+            end: origDoc.children.length == 0,
+            upv: 0,
+            dv: 0,
+            children: origDoc.children
+          },
+          (err, result) => {
             if (err) return callback(err);
-            callback(null, {
-              originalChild: res.insertedId,
-              branchedChild: result.insertedId
-            });
-          });
-        });
+
+            col.updateOne(
+              { _id: ObjectID(origID) },
+              {
+                $set: {
+                  content: root,
+                  children: [res.insertedId, result.insertedId]
+                }
+              },
+              (err, updateres) => {
+                if (err) return callback(err);
+                callback(null, {
+                  originalChild: res.insertedId,
+                  branchedChild: result.insertedId
+                });
+              }
+            );
+          }
+        );
       });
     } else {
-      col.updateOne({ _id: ObjectID(origID) }, {
-        $push: { children: res.insertedId }
-      }, (err, res) => {
-        if (err) return next(err);
+      col.updateOne(
+        { _id: ObjectID(origID) },
+        {
+          $push: { children: res.insertedId }
+        },
+        (err, res) => {
+          if (err) return next(err);
 
-        callback(null, {
-          success: true,
-          insertedId: res.insertedId
-        });
-      });
+          callback(null, {
+            success: true,
+            insertedId: res.insertedId
+          });
+        }
+      );
     }
   });
 };
@@ -95,25 +110,25 @@ exports.delete = (id, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
-    .deleteOne({_id: ObjectID(id)}, err => {
+    .deleteOne({ _id: ObjectID(id) }, err => {
       callback(err);
     });
 };
 
-exports.upvote =(id, callback) => {
+exports.upvote = (id, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
-    .update({_id: ObjectID(id)}, {$inc: {upv: 1}}, err => {
+    .update({ _id: ObjectID(id) }, { $inc: { upv: 1 } }, err => {
       callback(err);
     });
 };
 
-exports.downvote =(id, callback) => {
+exports.downvote = (id, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
-    .update({_id: ObjectID(id)}, {$inc: {dv: 1}}, err => {
+    .update({ _id: ObjectID(id) }, { $inc: { dv: 1 } }, err => {
       callback(err);
     });
 };

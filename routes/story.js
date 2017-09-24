@@ -1,5 +1,6 @@
 const express = require('express');
 const story = require('../models/story');
+const user = require('../models/user');
 
 const router = express.Router();
 
@@ -16,18 +17,27 @@ router.get('/:id', (req, res, next) => {
   story.get(req.params.id, (err, value) => {
     if (err) return next(err);
     res.json(value);
-  }); 
+  });
 });
 
 // new
 router.post('/', (req, res, next) => {
-  story.new(req.body.title, req.body.content, true, (err, result) => {
-    if (err) return next(err);
-    res.json({
-      success: true,
-      id: result.insertedId
-    });
-  });
+  story.new(
+    req.body.title,
+    req.body.content,
+    true,
+    req.body.author,
+    (err, result) => {
+      if (err) return next(err);
+      user.author(req.body.author, result.insertedId, err => {
+        if (err) return next(err);
+        res.json({
+          success: true,
+          id: result.insertedId
+        });
+      });
+    }
+  );
 });
 
 // split
@@ -47,9 +57,9 @@ router.post('/branch', (req, res, next) => {
       if (err) return next(err);
       res.json({
         success: true,
-        record,
+        record
       });
-    },
+    }
   );
 });
 
@@ -57,13 +67,13 @@ router.post('/branch', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   story.delete(req.params.id, err => {
     if (err) return next(err);
-    res.json({success: true});
+    res.json({ success: true });
   });
 });
 
 // upvote
 router.post('/:id/upv', (req, res, next) => {
-  story.upvote(req.params.id, (err) => {
+  story.upvote(req.params.id, err => {
     if (err) return next(err);
     res.json({ success: true });
   });
@@ -71,7 +81,7 @@ router.post('/:id/upv', (req, res, next) => {
 
 // downvote
 router.post('/:id/dv', (req, res, next) => {
-  story.downvote(req.params.id, (err) => {
+  story.downvote(req.params.id, err => {
     if (err) return next(err);
     res.json({ success: true });
   });
