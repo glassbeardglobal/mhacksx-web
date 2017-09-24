@@ -33,7 +33,7 @@ exports.get = (id, callback) => {
     });
 };
 
-exports.new = (title, content, root, author, callback) => {
+exports.new = (title, content, root, author, genre, callback) => {
   mongoUtil
     .getDb()
     .collection(collectionName)
@@ -45,7 +45,8 @@ exports.new = (title, content, root, author, callback) => {
         upv: 0,
         dv: 0,
         children: [],
-        author: author
+        author: author,
+        genre
       },
       (err, result) => {
         callback(err, result);
@@ -150,6 +151,15 @@ exports.downvote = (id, callback) => {
     .getDb()
     .collection(collectionName)
     .update({ _id: ObjectID(id) }, { $inc: { dv: 1 } }, err => {
+      callback(err);
+    });
+};
+
+exports.genre = (id, suggGenre, callback) => {
+  mongoUtil
+    .getDb()
+    .collection(collectionName)
+    .update({ _id: ObjectID(id) }, { $set: { genre: suggGenre } }, err => {
       callback(err);
     });
 };
